@@ -25,10 +25,13 @@ dayRouter.get('/', function(req, res, next) {
 	})
 })
 
-dayRouter.post('/', function(req, res, next) {
+dayRouter.post('/:num', function(req, res, next) {
 	Day.create({
-		//need to access number from front-end
-		
+		number: req.params.num
+	})
+	// console.log(dayNum);
+	.then(function(day) {
+		res.send(day);
 	})
 })
 

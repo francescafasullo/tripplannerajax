@@ -119,6 +119,7 @@ $(function initializeMap () {
     })
   )
 
+let days = 0;
   // 4. Deal with adding days
   $('button.addDay').click(
     evt => {
@@ -131,6 +132,17 @@ $(function initializeMap () {
       )
 
       numberDays()
+      days++;
+
+      $.ajax({
+        method: 'POST',
+        url: `/api/day/${days}`
+      })
+      //whatever is returned from the back-end
+      .then(function(data) {
+        console.log(data);
+        data.number = ($(".day").length);
+      })
     }
   )
 
@@ -209,15 +221,6 @@ $(function initializeMap () {
         })
       })
       .catch(console.error);
-    })
-
-    $(function() {
-      $.ajax({
-        method: 'POST',
-        url: '/api/day'
-      })
-      //whatever is returned from the back-end
-      .then(function())
     })
 
 

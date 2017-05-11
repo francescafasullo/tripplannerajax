@@ -8,9 +8,9 @@ var Activity = db.model('activity');
 var Place = db.model('place');
 var dayRouter = require('./days');
 
-//this is the /api path
+//this is the /api/day path
 
-router.use('/day', dayRouter);
+router.use('/api/day', dayRouter);
 
 router.get('/', function(req, res, next) {
 	Promise.all([

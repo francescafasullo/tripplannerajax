@@ -8,12 +8,28 @@ var Activity = db.model('activity');
 var Place = db.model('place');
 var Day = db.model('day');
 
-//this is /day
+//this is /api/day
 
 
 //test route
 dayRouter.get('/', function(req, res, next) {
-	res.send({data: 'You GOT all the days!'});
+	Day.findAll({
+		include: [{all: true, nested: true}]
+		//loads everything
+		//include includes the day, hotel
+		//we want to use nesting because hotel has a place
+		//nesting allows us to access all the place columns
+	})
+	.then(function(days) {
+		res.send(days);
+	})
+})
+
+dayRouter.post('/', function(req, res, next) {
+	Day.create({
+		//need to access number from front-end
+		
+	})
 })
 
 dayRouter.get('/:num/:attraction', function(req, res, next) {

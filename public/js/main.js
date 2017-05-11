@@ -145,7 +145,8 @@ $(function initializeMap () {
     evt => {
       $('.day.current').removeClass('current')
       const $day = $(evt.target).closest('.day')
-
+      //_i is placeholder for index
+      //li is the actual list item
       $('li').each((_i, li) => li.marker && li.marker.setMap(null))      
       $day.addClass('current')
       $day.find('li').each((_i, li) => li.marker.setMap(currentMap))
@@ -155,7 +156,9 @@ $(function initializeMap () {
   // 6. Remove a day
   $(document).on('click', 'button.delDay',
     evt => {
+      console.log('hit delDay');
       const $day = $(evt.target).closest('.day')
+      console.log($day);
       if ($day.hasClass('current')) {
         const prev = $day.prev('.day')[0]
             , next = $day.next('.day')[0]
@@ -169,31 +172,61 @@ $(function initializeMap () {
     })
 
   // When we start, add a day
-  $('button.addDay').click()
+    $(function() {
+      $.ajax({
+        method: 'GET',
+        url: '/api/day',
 
-  $('#control-panel').on('click', (e) => {
-    console.log('clicked')
-    fetch('/day').then(data => {
-      console.log('GET response data: ', data)
+      })
+      .then(function(days) {
+        console.log(days);
+        days.forEach(function(day) {
+          $('.addDay').click();
+
+          day.restaurants.forEach(function(restaurant) {
+
+            //turning the string into a JQuery object, then we set the first element to be the new restaurant
+            //JQuery knows when you give it [0] to look for the innerHTML
+
+            let li = $(`<li>${restaurant.name} <button class="del">x</button></li>`)[0];
+            //could try adding them using the restaurant add button
+            li.marker = drawMarker(restaurant, restaurant.place.location);
+            $(".current").append(li);
+            console.log(li);
+          })
+
+          day.activities.forEach(function(activity) {
+            let li = $(`<li>${activity.name} <button class="del">x</button></li>`)[0];
+            li.marker = drawMarker(activity, activity.place.location);
+            $(".current").append(li);
+
+          })
+
+          let li = $(`<li>${day.hotel.name} <button class="del">x</button></li>`)[0];
+          var hotel = day.hotel;
+            li.marker = drawMarker(hotel, hotel.place.location);
+          $(".current").append(li);
+        })
+      })
+      .catch(console.error);
     })
-  })
 
-// $(document).onReady(function() {
-  // $.ajax({
-  //   method: 'GET',
-  //   url: '/day'
+    $(function() {
+      $.ajax({
+        method: 'POST',
+        url: '/api/day'
+      })
+      //whatever is returned from the back-end
+      .then(function())
+    })
+
+
+  // $('#control-panel').on('click', (e) => {
+  //   console.log('clicked')
+  //   fetch('/api/day').then(data => {
+  //     console.log('GET response data: ', data)
   //   })
-  //   .then(function (data) { console.log('GET response data: ', data) })
-  //   .catch(console.error.bind(console));
-  //   // should log "GET response data: You GOT all the days"
-  // $.ajax({
-  //   method: 'POST',
-  //   url: '/day'
-  //   })
-  //   .then(function (data) { console.log('POST response data: ', data) })
-  //   .catch(console.error.bind(console));
-    // should log "POST response data: You created a day!!"
-// })
+  // })
 
 
 });
